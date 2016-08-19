@@ -18,19 +18,22 @@ def best_result(food1, food2):
     '''If both food1, food2 are non-negative return the minimum,
     if at least one is negative return the maximum.
     '''
-    return min(food1, food2) if food1 >= 0 and food2 >= 0 else max(food1, food2)
+    both_paths_viable = food1 >= 0 and food2 >= 0
+    return min(food1, food2) if both_paths_viable else max(food1, food2)
 
 
 def step_down(step, grid):
     '''Return the result of moving down one step in the grid.'''
-    return PathStep(step.row + 1, step.col,
-           step.food_left - grid[step.row + 1][step.col])
+    new_row = step.row + 1
+    new_food = step.food_left - grid[new_row][step.col]
+    return PathStep(new_row, step.col, new_food)
 
 
 def step_right(step, grid):
     '''Return the result of moving right one step in the grid.'''
-    return PathStep(step.row, step.col + 1,
-           step.food_left - grid[step.row][step.col + 1])
+    new_col = step.col + 1
+    new_food = step.food_left - grid[step.row][new_col]
+    return PathStep(step.row, new_col, new_food)
 
 
 def spend_most_food(starting_food, grid):
@@ -44,7 +47,9 @@ def spend_most_food(starting_food, grid):
     last_col = len(grid[0]) - 1
     best = -1
 
-    steps_to_take = [PathStep(0, 0, starting_food)]
+    first_step = PathStep(0, 0, starting_food)
+    steps_to_take = [first_step]
+
     while len(steps_to_take) > 0:
         head = steps_to_take.pop()
 
